@@ -31,8 +31,9 @@ pub enum ImageKind {
     Original,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub enum ImageExt {
+    #[default]
     Avif,
     Webp,
 }
@@ -55,12 +56,6 @@ impl AsRef<str> for ImageExt {
 impl Display for ImageExt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.as_ref().fmt(f)
-    }
-}
-
-impl Default for ImageExt {
-    fn default() -> Self {
-        Self::Avif
     }
 }
 
