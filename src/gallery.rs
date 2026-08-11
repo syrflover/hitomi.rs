@@ -5,7 +5,7 @@ use crate::{
     model,
     network::{
         self,
-        http::{BASE_DOMAIN, request},
+        http::{request, BASE_DOMAIN},
     },
 };
 
@@ -71,6 +71,17 @@ mod sealed {
         pub url: String,
     }
 
+    #[derive(Debug, Deserialize)]
+    pub struct LanguageVariants {
+        #[serde(rename = "galleryid", with = "either::serde_untagged")]
+        pub gallery_id: Either<String, u32>,
+        /// korean, chinese, japanese
+        pub name: String,
+        /// 한국어, 中文, 日本語
+        #[serde(rename = "language_localname")]
+        pub local_name: String,
+    }
+
     fn unwrap_or_default<'de, D, T>(d: D) -> Result<T, D::Error>
     where
         D: Deserializer<'de>,
@@ -89,7 +100,12 @@ mod sealed {
         #[serde(with = "either::serde_untagged")]
         pub id: Either<String, u32>,
         pub title: String,
+        pub japanese_title: Option<String>,
         pub language: Option<String>,
+        #[serde(default, deserialize_with = "unwrap_or_default")]
+        pub language_variants: Vec<LanguageVariants>,
+        #[serde(default, deserialize_with = "unwrap_or_default")]
+        pub related: Vec<u32>,
         #[serde(default, deserialize_with = "unwrap_or_default")]
         pub artists: Vec<Artist>,
         #[serde(default, deserialize_with = "unwrap_or_default")]
@@ -172,6 +188,16 @@ mod sealed {
         }
     }
 
+    impl From<LanguageVariants> for model::LanguageVariant {
+        fn from(lang: LanguageVariants) -> Self {
+            Self {
+                gallery_id: lang.gallery_id.right_or_else(|x| x.parse().unwrap()),
+                name: lang.name,
+                local_name: lang.local_name,
+            }
+        }
+    }
+
     impl TryFrom<Gallery> for model::Gallery {
         type Error = Error;
 
@@ -192,6 +218,7 @@ mod sealed {
             Ok(Self {
                 id,
                 title: g.title,
+                japanese_title: g.japanese_title,
                 kind: g.kind,
                 files: g
                     .files
@@ -200,6 +227,8 @@ mod sealed {
                     .map(|(i, file)| (i + 1, file.into()))
                     .collect(),
                 language: g.language,
+                langauge_variants: g.language_variants.into_iter().map_into().collect(),
+                related: g.related,
                 tags: artists
                     .chain(groups)
                     .chain(series)
