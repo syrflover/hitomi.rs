@@ -1,6 +1,6 @@
 [package]
 name = "hitomi_la"
-version = "0.1.4"
+version = "0.2.0"
 description = "A hitomi.la API wrapper for Rust"
 edition = "2021"
 authors = ["syrlee <user@syrflover.co>"]
