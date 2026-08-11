@@ -6,8 +6,8 @@ pub enum TagKind {
     Artist,
     #[serde(rename = "group")]
     Group,
-    #[serde(rename = "series")]
-    Series,
+    #[serde(rename = "parody")]
+    Parody,
     #[serde(rename = "character")]
     Character,
     #[serde(rename = "female")]
@@ -31,7 +31,7 @@ impl AsRef<str> for TagKind {
         match self {
             Artist => "artist",
             Group => "group",
-            Series => "series",
+            Parody => "parody",
             Character => "character",
             Female => "female",
             Male => "male",

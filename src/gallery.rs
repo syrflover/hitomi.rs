@@ -59,9 +59,8 @@ mod sealed {
     }
 
     #[derive(Debug, Deserialize)]
-    pub struct Series {
-        #[serde(rename = "parody")]
-        pub series: String,
+    pub struct Parody {
+        pub parody: String,
         pub url: String,
     }
 
@@ -114,8 +113,8 @@ mod sealed {
         pub tags: Vec<Tag>,
         #[serde(default, deserialize_with = "unwrap_or_default")]
         pub characters: Vec<Character>,
-        #[serde(rename = "parodys", default, deserialize_with = "unwrap_or_default")]
-        pub series: Vec<Series>,
+        #[serde(default, deserialize_with = "unwrap_or_default")]
+        pub parodys: Vec<Parody>,
         pub date: String,
     }
 
@@ -153,11 +152,11 @@ mod sealed {
         }
     }
 
-    impl From<Series> for model::Tag {
-        fn from(x: Series) -> Self {
+    impl From<Parody> for model::Tag {
+        fn from(x: Parody) -> Self {
             Self {
-                kind: model::TagKind::Series,
-                name: x.series,
+                kind: model::TagKind::Parody,
+                name: x.parody,
             }
         }
     }
@@ -206,7 +205,7 @@ mod sealed {
 
             let artists = g.artists.into_iter().map_into();
             let groups = g.groups.into_iter().map_into();
-            let series = g.series.into_iter().map_into();
+            let parodys = g.parodys.into_iter().map_into();
             let characters = g.characters.into_iter().map_into();
             let tags = g.tags.into_iter().map_into();
 
@@ -231,7 +230,7 @@ mod sealed {
                 related: g.related,
                 tags: artists
                     .chain(groups)
-                    .chain(series)
+                    .chain(parodys)
                     .chain(characters)
                     .chain(tags)
                     .collect(),
