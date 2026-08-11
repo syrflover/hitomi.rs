@@ -23,7 +23,7 @@ pub struct Gallery {
     /// page starts from 1
     pub files: Vec<(usize, File)>,
     pub language: Option<String>,
-    pub langauge_variants: Vec<LanguageVariant>,
+    pub language_variants: Vec<LanguageVariant>,
     pub related: Vec<u32>,
     pub tags: Vec<Tag>,
     pub date: DateTime<Utc>,

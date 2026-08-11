@@ -227,7 +227,7 @@ mod sealed {
                     .map(|(i, file)| (i + 1, file.into()))
                     .collect(),
                 language: g.language,
-                langauge_variants: g.language_variants.into_iter().map_into().collect(),
+                language_variants: g.language_variants.into_iter().map_into().collect(),
                 related: g.related,
                 tags: artists
                     .chain(groups)
